@@ -194,9 +194,12 @@ sub remainder {
     return $a / $b - int( $a / $b );
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# ouvre en lecture le fichier CSS à analyser
+# param: nom du fichier
+# return:
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub loadFileCss {
     my $f = shift @_;
     print "\nRecherche le fichier: " . basename($f) . "\n";
@@ -204,9 +207,12 @@ sub loadFileCss {
       or die "Echec ouverture du fichier css : $!";
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# ouvre en ecriture le fichier GPL a crèer et ecrit l'en tête GPL
+# param: nom du fichier
+# return:
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub writeHeaderFileGpl {
     my $f     = shift @_;
     my $NoExt = '(.+?)(\.[^\.]*+$|$)'; #suppr toute extension (.+?)(\.[^\.]+$|$)
@@ -216,9 +222,12 @@ sub writeHeaderFileGpl {
     printf( $fGpl "${Header}", $n, $c );
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# ouvre en lecture le fichier CSS à analyser
+# param: nom du fichier
+# return: à l'ecran (version alpha) les coulerus et commentaire format GPL
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub readFileCss {
     my $f = shift @_;
     my $l = "";
@@ -234,9 +243,12 @@ sub readFileCss {
     }
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# Extrait du fichier CSS le commentaire de la ligne et le formate GPL
+# param: ligne en cours du fichier CSS
+# return: le commentaire format GPL
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub extractComment {
     my $line = shift @_;
     if ( $line =~ /$patternComment/ ) {
@@ -248,12 +260,16 @@ sub extractComment {
     return "";
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-# !CSS4 #ff00ffaa | #f0fa ->canal alpha en hexa non implementé!
-#
+# Extrait du fichier CSS le format #hexa[3 ou 6]
+# param: ligne en cours ddu fichier CSS
+# return: le format hexa de la couleur
+# /!\ CSS4 #ff00ffaa | #f0fa ->canal alpha en hexa non implementé /!\
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub extractHexa {
     my $line    = shift @_;
-    my $pattern = "#([a-fA-F0-9]{6})|#([a-fA-F0-9]{3})";
+    my $pattern = "#([a-fA-F0-9]{6})|#([a-fA-F0-9]{3})";  # code #ABCDEF ou #ABC
     my $match   = "";
     if ( $line =~ /$pattern/ ) {
         $match = defined $1 ? $1 : $2;
@@ -262,10 +278,18 @@ sub extractHexa {
     else { return $match; }
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
-#
+# Extrait du fichier CSS le format:
+# RGB strict: rgb(R%, G%, B%) ou rgba(R%, G%, B%, A%)
+# HSL strict: hsl(H~unitAngle, S%, L%) ou hsl(H~uAngle, S%, L%, A%)
+# RGB|HSL: rgb(R[0..255], G[0..255], B[0..255])
+#          rgba(R[0..255], G[0..255], B[0..255], A)
+#          hsl(H, S%, L%)
+#          hsla(H, S%, L%, A)
+# param: ligne en cours ddu fichier CSS
+# return: le format GPL de la couleur
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub extractRgbHsl {
     my $line = shift @_;
     my $patternStrictRgb =
@@ -285,7 +309,7 @@ sub extractRgbHsl {
     if ( $line =~ /$patternStrictRgb/ ) {
         my @rgb;
         my ( $t, $r, $g, $b ) = ( $1, $2 * 2.55, $3 * 2.55, $4 * 2.55 );
-        $sRgb = sprintf( "%3.f %3.f %3.f", $r, $g, $b );
+        $sRgb = sprintf( "%3.f %3.f %3.f", $r, $g, $b );    #arrondi float
 
         # print $sRgb, "\n";
         return $sRgb;
@@ -315,30 +339,10 @@ sub extractRgbHsl {
         my ( $t, $r, $g, $b ) = ( $1, $2, $3, $4 );
         if ( $t =~ /rgb/ ) {
             $sRgb = sprintf( "%3d %3d %3d", $r, $g, $b );
-
-            #  print("rgb: ${sRgb}\n");
         }
         elsif ( $t =~ /hsl/ ) {    # les positions r g b correspond h s l
             $sRgb = hsl2Rgb( $r, $g, $b );
 
-# my ( $h, $s, $l ) = (
-#     sprintf( "%.5f", $r / 360.0 ),
-#     sprintf( "%.5f", $g / 100.0 ),
-#     sprintf( "%.5f", $b / 100.0 )
-# );
-#
-# #todo test s et l entre [0..1]
-# my ( $r, $g, $b ) = ( $l * 255.0, $l * 255.0, $l * 255.0 );
-# if ( $s != 0.0 ) {
-#     my $var_2 =
-#       $l < 0.5 ? $l * ( 1.0 + $s ) : ( $l + $s ) - ( $s * $l );
-#     my $var_1 = 2.0 * $l - $var_2;
-#     $r = 255 * hue2Rgb( $var_1, $var_2, $h + ( 1.0 / 3.0 ) );
-#     $g = 255 * hue2Rgb( $var_1, $var_2, $h );
-#     $b = 255 * hue2Rgb( $var_1, $var_2, $h - ( 1.0 / 3.0 ) );
-# }
-# $sRgb = sprintf( "%-.f %-.f %-.f", $r, $g, $b );
-# print $sRgb. "\n";
 # def HSL_to_RGB(h,s,l):
 #     ''' Converts HSL colorspace (Hue/Saturation/Value) to RGB colorspace.
 #         Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
@@ -381,17 +385,22 @@ sub extractRgbHsl {
 #
 #     return (int(round(r)),int(round(g)),int(round(b)))
 #
-#
-#
         }
         return $sRgb;
     }
     else { return "" }
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# Routine de conversion valeur HSL to RGB
+# param: ligne en cours ddu fichier CSS
+# return: le format GPL de la couleur
+# sourcing:
+# + Converts HSL colorspace (Hue/Saturation/Value) to RGB colorspace.
+#         Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
+# + un code source python ;)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub hsl2Rgb {
     my ( $h, $s, $l ) = @_;
     ( $h, $s, $l ) = (
@@ -408,13 +417,20 @@ sub hsl2Rgb {
         $g = 255 * hue2Rgb( $var_1, $var_2, $h );
         $b = 255 * hue2Rgb( $var_1, $var_2, $h - ( 1.0 / 3.0 ) );
     }
-    my $sRgb = sprintf( "%3.f %3.f %3.f", $r, $g, $b );
+    my $sRgb = sprintf( "%3.f %3.f %3.f", $r, $g, $b );    #arrondi float
     return $sRgb;
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# sous-Routine de conversion valeur HSL to RGB appel de hsl2Rgb
+# param: traitemet pour obtenir HUE
+# return: valeur parametrée
+# sourcing:
+# + Converts HSL colorspace (Hue/Saturation/Value) to RGB colorspace.
+#         Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
+# + un code source python ;)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub hue2Rgb {
     my ( $v1, $v2, $vH ) = @_;
     while ( $vH < 0.0 ) { $vH += 1.0 }
@@ -427,9 +443,16 @@ sub hue2Rgb {
     return $v1;
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
-#
+# Routine de conversion valeurs hexadecimales to RGB
+# param: code hexadeimal de la couleur
+# return: le format GPL de la couleur
+# sourcing:
+# + Converts HSL colorspace (Hue/Saturation/Value) to RGB colorspace.
+#         Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
+# + un code source python ;)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub hexa2rgb {
     my $hexa = shift @_;
     my @rgb;
@@ -446,16 +469,16 @@ sub hexa2rgb {
     foreach (@rgb) {
         $sRgb .= sprintf( "%3d ", hex $_ );
     }
-    $sRgb =~ s/\s$//g;
+    $sRgb =~ s/\s$//g;    #trim blanc final
     return $sRgb;
 }
 
-#
-# main
-#
+#  ___________________________________________________________________________
+# |                                                                           |
+# |                         </CTICIKESSADEMAR/>                               |
+# |___________________________________________________________________________|
 my $File    = $i;    # recupere 1er argument
 my $FileGpl = $o;    # recupere 2eme argument
-
 loadFileCss($File);
 print "\nEcriture du fichier gpl\n\n";
 writeHeaderFileGpl($FileGpl);

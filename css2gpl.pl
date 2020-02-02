@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w -s
+#  -*- coding: utf-8 -*-
 # program:    css2gpl.pl
 #             Extrait d'un fichier texte les couleurs (format css) et créé une
 #             palette .gpl pour The GIMP.
@@ -10,11 +11,31 @@
 #               color: #ff0; /*What...is your favorite color? blue, No, yel-- auuuuuugh!*/
 #             devient la ligne gpl
 #               255 255 0 What...is your favorite color? blue, No, yel-- auuuuuugh!
-# version:    0.1
+# version:    alpha 0.1
 # usage:      perl css2gpl.pl <nomFichier> <nomPalette.gpl>
 # author:     LeKiwiDeBx
 # date:       27/01/2020
-
+#
+# Copyright  © 2020 </LeKiwiDeBx>  GNU General Public License
+#
+#  This file is part of css2gpl.pl.
+#
+# css2gpl.pl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# css2gpl.pl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with css2gpl.pl.  If not, see <https://www.gnu.org/licenses/>
+#   ,= ,-_-. =.
+#  ((_/)o o(\_))
+#   `-'(. .)`-'
+#       \_/
 use strict;
 use warnings;
 use File::Basename;
@@ -342,7 +363,7 @@ sub extractRgbHsl {
         }
         elsif ( $t =~ /hsl/ ) {    # les positions r g b correspond h s l
             $sRgb = hsl2Rgb( $r, $g, $b );
-
+#
 # def HSL_to_RGB(h,s,l):
 #     ''' Converts HSL colorspace (Hue/Saturation/Value) to RGB colorspace.
 #         Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
@@ -428,7 +449,8 @@ sub hsl2Rgb {
 # return: valeur parametrée
 # sourcing:
 # + Converts HSL colorspace (Hue/Saturation/Value) to RGB colorspace.
-#         Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
+#      (obsolete)   Formula from http://www.easyrgb.com/math.php?MATH=M19#text19
+# + NEW! Formula from https://www.easyrgb.com/en/math.php
 # + un code source python ;)
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub hue2Rgb {
@@ -475,7 +497,7 @@ sub hexa2rgb {
 
 #  ___________________________________________________________________________
 # |                                                                           |
-# |                         </CTICIKESSADEMAR/>                               |
+# |                         </{Version α}>  <>                               |
 # |___________________________________________________________________________|
 my $File    = $i;    # recupere 1er argument
 my $FileGpl = $o;    # recupere 2eme argument

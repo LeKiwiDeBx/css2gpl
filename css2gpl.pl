@@ -16,7 +16,7 @@
 # author:     LeKiwiDeBx
 # date:       27/01/2020
 #
-# Copyright  © 2020 </LeKiwiDeBx>  GNU General Public License
+# Copyright  © 2020 </{LeKiwiDeBx}>  GNU General Public License
 #
 #  This file is part of css2gpl.pl.
 #
@@ -204,9 +204,10 @@ print
   "\nProgramme de création d'une palette .gpl à partir d'un fichier css\n";
 print "version: $version\n";
 
-#
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # modulo function
-#
+# usage: m * remainder (x,m) <=> (x)modulo(m)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub remainder {
     my ( $a, $b ) = @_;
     return 0 unless $b && $a;
@@ -497,7 +498,7 @@ sub hexa2rgb {
 
 #  ___________________________________________________________________________
 # |                                                                           |
-# |                         </{Version α}>  <>                               |
+# |                         </{Version α}>     °}                             |
 # |___________________________________________________________________________|
 my $File    = $i;    # recupere 1er argument
 my $FileGpl = $o;    # recupere 2eme argument

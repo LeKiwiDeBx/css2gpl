@@ -502,19 +502,38 @@ sub hexa2rgb {
     return $sRgb;
 }
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
+# Converti le rgb format gpl en hexa pour l'inclure dans le commentaire
+# param: le color rgb 255 255 255 format gpl
+# return: en format hexa #ABCDEF
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub rgb2hexa {
+    my $rgb = shift @_;
+    my ( $r, $g, $b ) = split /\s+/, $rgb;
+    my $hexa =
+      sprintf( "#\%.2X\%.2X\%.2X", $r, $g, $b );    #3x2digits complete par 0
+    return $hexa;
+}
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
-#
+# Fait la ligne gpl au format <R> <G> <B> <#codeHexa plus commentaire>
+# param: liste couleur au format + le commentaire extrait
+# + le code hexa dans les commentaires n'est pas obligatoire, c'est pour aider
+#   l'utilisateur de la palette dans GIMP
+# Ecrit dans la hash table $keys= couleur au format $value= commentaire extrait
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub doLineGpl {
     my ( $color, $comment ) = @_;
     unless ( exists( $ColorComment{$color} ) ) {
-        $ColorComment{$color} = $comment;
+        $ColorComment{$color} = rgb2hexa($color) . " " . $comment;
     }
     else {
-        $ColorComment{$color} .= $comment;
+        $ColorComment{$color} .= " " . $comment;
     }
 
-    #print "\nrow : ", join( "\n", %ColorComment );
+    #  print "\nList : \n", join( "\n", %ColorComment );
 }
 
 #  ___________________________________________________________________________
@@ -529,12 +548,13 @@ writeHeaderFileGpl($FileGpl);
 readFileCss($File);
 
 #test doLineGpl
-my $colorTest_1   = "255 0 0";
-my $colorTest_2   = "jhjhkh";
+my $colorTest_1   = "15 14 13";
+my $colorTest_2   = "127 0 96";
 my $commentTest_1 = "commentaire 1";
 my $commentTest_2 = "commentaire 2";
 my $commentTest_3 = "commentaire 3";
 doLineGpl( $colorTest_1, $commentTest_1 );
 doLineGpl( $colorTest_1, $commentTest_2 );
 doLineGpl( $colorTest_2, $commentTest_3 );
+
 print "\n";

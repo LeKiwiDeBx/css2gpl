@@ -291,7 +291,7 @@ sub extractComment {
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # Extrait du fichier CSS le format #hexa[3 ou 6]
-# param: ligne en cours ddu fichier CSS
+# param: ligne en cours du fichier CSS
 # return: le format hexa de la couleur
 # /!\ CSS4 #ff00ffaa | #f0fa ->canal alpha en hexa non implementé /!\
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -304,6 +304,24 @@ sub extractHexa {
         return $match;
     }
     else { return $match; }
+}
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# Extrait du fichier CSS une couleur nommée
+# param: ligne en cours du fichier CSS
+# return: le format gpl de la couleur
+# /!\ il y' aplus de 140 couleurs nommées car grey=gray  /!\
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub extractColorNamed {
+    my $line = shift @_;
+    print "\nline : ", $line, "\n";
+    while ( (my $key, my $value ) = each (%IDlistNameColor) ){
+        #print $key , "#", $value, "\n";
+        if(($line) =~ m/(\s+|,|:)($key)\b/gi ){
+            print "couleur matchée: $key\n";
+        }
+    }
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -518,6 +536,24 @@ sub rgb2hexa {
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
+# Converti "$key<les couleurs nommées>"=>"$value<code hexa>" au format rgb de gpl
+# param: la couleur nommées $key de %ColorComment
+# return: en format gpl $R[0..255] $G[0..255] $B[0..255] ie: 0 255 68
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub colorName2rgb {
+    my $colorName = shift @_;
+    my @rgb       = $IDlistNameColor{ lc $colorName } =~
+      /([0-9A-Fa-f]{2})/g;    # ABCDEF->('AB','CD','EF')
+    my $sRgb;
+    foreach (@rgb) {
+        $sRgb .= sprintf( "%3d ", hex $_ );
+    }                         #          force en hexa et converti en decimal
+    $sRgb =~ s/\s$//g;        #trim blanc final
+    return $sRgb;
+}
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
 # Fait la ligne gpl au format <R> <G> <B> <#codeHexa plus commentaire>
 # param: liste couleur au format + le commentaire extrait
 # + le code hexa dans les commentaires n'est pas obligatoire, c'est pour aider
@@ -553,8 +589,10 @@ my $colorTest_2   = "127 0 96";
 my $commentTest_1 = "commentaire 1";
 my $commentTest_2 = "commentaire 2";
 my $commentTest_3 = "commentaire 3";
-doLineGpl( $colorTest_1, $commentTest_1 );
-doLineGpl( $colorTest_1, $commentTest_2 );
-doLineGpl( $colorTest_2, $commentTest_3 );
 
+# doLineGpl( $colorTest_1, $commentTest_1 );
+# doLineGpl( $colorTest_1, $commentTest_2 );
+# doLineGpl( $colorTest_2, $commentTest_3 );
+#print "couleur : ", colorName2rgb("Chocolate");    #D2691E
+extractColorNamed("la couleur yelloW ; Blue; SnowBoard; color:grey; barryWhite, ,black; green_washing red-neck ");
 print "\n";

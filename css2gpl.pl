@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # program:    css2gpl.pl
 #             Extrait d'un fichier texte les couleurs (format css) et créé une
-#             palette .gpl pour The GIMP.
+#             palette au format .gpl pour The GIMP.
 #             Gère les format #abc #a1b2c3 rgb() rgba() hsl() hsla()
-#             Ignore la transparence de (rgb|hsl)a 'transparent' et les couleurs
-#             nommées
+#             Gère les couleurs nommées
+#             Ignore la transparence de (rgb|hsl)a 'transparent' absent du format gpl
 #             Ajoute au fichier palette.gpl un commentaire si dans le fichier
 #             texte on le touve en commentaire, ie:
 #               color: #ff0; /*What...is your favorite color? blue, No, yel-- auuuuuugh!*/
@@ -259,14 +259,28 @@ sub writeHeaderFileGpl {
 sub readFileCss {
     my $f = shift @_;
     my $l = "";
+
     open( $fCss, "<", $f ) or die "Echec ouverture du fichier css : $!";
     while ( defined( $l = <$fCss> ) ) {
         chomp $l;
         if ( extractHexa($l) ne '' ) {
-            print hexa2rgb( extractHexa($l) ), " ", extractComment($l), "\n";
+
+            #print hexa2rgb( extractHexa($l) ), " ", extractComment($l), "\n";
         }
         if ( extractRgbHsl($l) ne '' ) {
-            print extractRgbHsl($l), " ", extractComment($l), "\n";
+
+            #print extractRgbHsl($l), " ", extractComment($l), "\n";
+        }
+        my @colorNameRgb = extractColorNamed($l);
+        if (@colorNameRgb) {
+
+            # print "liste : ", @colorNameRgb;
+            foreach my $rgb (@colorNameRgb) {
+
+                #print $rgb , " ", extractComment($l),"\n";
+                print doLineGpl( $rgb, extractComment($l) ), "\n";
+            }
+            #print "\ndoLineGpl: \n", join( " * *", %ColorComment );
         }
     }
 }
@@ -310,18 +324,23 @@ sub extractHexa {
 #
 # Extrait du fichier CSS une couleur nommée
 # param: ligne en cours du fichier CSS
-# return: le format gpl de la couleur
-# /!\ il y' aplus de 140 couleurs nommées car grey=gray  /!\
+# return: le format gpl de la couleur ou une liste couleur (cas des gradient)
+# /!\ il y' a plus de 140 couleurs nommées car grey=gray => 148 couleurs     /!\
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub extractColorNamed {
     my $line = shift @_;
-    print "\nline : ", $line, "\n";
-    while ( (my $key, my $value ) = each (%IDlistNameColor) ){
-        #print $key , "#", $value, "\n";
-        if(($line) =~ m/(\s+|,|:)($key)\b/gi ){
-            print "couleur matchée: $key\n";
+    my @rgb  = ();
+
+    # print "\nline : ", $line, "\n";
+    while ( ( my $key, my $value ) = each(%IDlistNameColor) ) {
+        if ( ($line) =~ /:.*(?:\s*|,|:)\b($key)\b.*;/gi
+          )    #si $key identique plusieurs fois ne capture que le dernier
+        {      # :.*(?:\s*|,|:)\b($key)\b.*;  (?:\s+|,|:)($key)\b
+                # print "couleur matchée: $key\n";
+            push @rgb, colorName2rgb($key);
         }
     }
+    return @rgb;
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -528,9 +547,16 @@ sub hexa2rgb {
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub rgb2hexa {
     my $rgb = shift @_;
+
+    #print "\nrgb2hexa :|", $rgb, "|->";
+    $rgb =~ s/(0{1,2})(\d+)/$2/g
+      ; #enleve les 1 ou 2zero debut de chaque r g b, ie: 009 -> 9 | 080 -> 80 | 125 ->125
     my ( $r, $g, $b ) = split /\s+/, $rgb;
+
+    #print "rgb:$rgb ";
     my $hexa =
-      sprintf( "#\%.2X\%.2X\%.2X", $r, $g, $b );    #3x2digits complete par 0
+      sprintf( "#\%2.2X\%2.2X\%2.2X", $r, $g, $b );    #3x2digits complete par 0
+                                                       #print " ", $hexa;
     return $hexa;
 }
 
@@ -538,7 +564,7 @@ sub rgb2hexa {
 #
 # Converti "$key<les couleurs nommées>"=>"$value<code hexa>" au format rgb de gpl
 # param: la couleur nommées $key de %ColorComment
-# return: en format gpl $R[0..255] $G[0..255] $B[0..255] ie: 0 255 68
+# return: en format gpl $R[0..255] $G[0..255] $B[0..255] ie: 000 255 068
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub colorName2rgb {
     my $colorName = shift @_;
@@ -546,9 +572,10 @@ sub colorName2rgb {
       /([0-9A-Fa-f]{2})/g;    # ABCDEF->('AB','CD','EF')
     my $sRgb;
     foreach (@rgb) {
-        $sRgb .= sprintf( "%3d ", hex $_ );
-    }                         #          force en hexa et converti en decimal
-    $sRgb =~ s/\s$//g;        #trim blanc final
+        $sRgb .=
+          sprintf( "%03d ", hex $_ );    #force en hexa et converti en decimal
+    }
+    $sRgb =~ s/\s$//g;                   #trim blanc final
     return $sRgb;
 }
 
@@ -562,14 +589,17 @@ sub colorName2rgb {
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub doLineGpl {
     my ( $color, $comment ) = @_;
+    $color =~ s/(0{1,2})(\d+)/$2/g;
+
+    #print "\ndoLineGpl color: |$color|\n";
     unless ( exists( $ColorComment{$color} ) ) {
         $ColorComment{$color} = rgb2hexa($color) . " " . $comment;
     }
     else {
         $ColorComment{$color} .= " " . $comment;
     }
-
-    #  print "\nList : \n", join( "\n", %ColorComment );
+    return $color." ".$ColorComment{$color} ;
+    #print "\nDoLineGpl: \n", join( "\n", %ColorComment );
 }
 
 #  ___________________________________________________________________________
@@ -583,6 +613,7 @@ print "\nEcriture du fichier gpl\n\n";
 writeHeaderFileGpl($FileGpl);
 readFileCss($File);
 
+# ZONE TEST ====================================================================================
 #test doLineGpl
 my $colorTest_1   = "15 14 13";
 my $colorTest_2   = "127 0 96";
@@ -594,5 +625,5 @@ my $commentTest_3 = "commentaire 3";
 # doLineGpl( $colorTest_1, $commentTest_2 );
 # doLineGpl( $colorTest_2, $commentTest_3 );
 #print "couleur : ", colorName2rgb("Chocolate");    #D2691E
-extractColorNamed("la couleur yelloW ; Blue; SnowBoard; color:grey; barryWhite, ,black; green_washing red-neck ");
+# print extractColorNamed("div {  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);}"  );
 print "\n";

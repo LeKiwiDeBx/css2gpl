@@ -29,3 +29,6 @@ div#head {
 span:hover {
   color: hsla(274deg, 81%, 35%, 0.85); /* format hsla(hueUnite, %, %, a) */
 }
+div {
+  background: linear-gradient(to right,  red, orange, yellow, green, blue, indigo, violet, black); /* Over the Rainbow ! Judy */
+}

@@ -1,34 +1,28 @@
 link:active {
-  /*comment 1*/
-  color: #FF00FF; /* format #AABBCC */
-  /* comment 3 */
-}
+    /*comment 1*/
+    color: #FF00FF;    /* format #AABBCC */
+/* comment 3 */}
 
 span {
-  background-color: #0000FF;  /*/* format #AABBCC */ /* /* format #AABBCC */
-  border-left: #AFFF00; /* format #AABBCC */
-}
+    background-color: #0000FF;    /*/* format #AABBCC */ /* /* format #AABBCC */
+    border-left: #AFFF00;    /* format #AABBCC */}
 
 p {
-  color: #fff;  /* format #AABBCC */
-}
+color: #fff;    /* format #AABBCC #fff*/}
 
 div {
-  color: rgb(134, 128, 119);  /* format rgb(r, g, b) */
-  background-color: rgba(255, 255, 255, .95);  /* format rgba(r, g, b, a)*/
-}
+    color: rgb(134, 128, 119);    /* format rgb(r, g, b) */
+    background-color: rgba(255, 255, 255, .95);    /* format rgba(r, g, b, a)*/}
 
 div#bottom {
-  color: rgba(5%, 7%, 10%, 0.5); /* format rgba(%, %, %, a) */
-}
+    color: rgba(5%, 7%, 10%, 0.5);    /* format rgba(%, %, %, a) */}
 
 div#head {
-  color: hsl(274, 81%, 35%); /* format hsl(hue, %, %) */
-}
+    color: hsl(274, 81%, 35%);    /* format hsl(hue, %, %) */}
 
 span:hover {
-  color: hsla(274deg, 81%, 35%, 0.85); /* format hsla(hueUnite, %, %, a) */
-}
+    color: hsla(274deg, 81%, 35%, 0.85);    /* format hsla(hueUnite, %, %, a) */}
+
 div {
-  background: linear-gradient(to right,  red, orange, yellow, green, blue, indigo, violet, black); /* Over the Rainbow ! Judy */
+    background: linear-gradient(to right white, cyan, red, orange, yellow, green, blue, indigo, violet, black ); /*  Over the Rainbow ! Judy */
 }

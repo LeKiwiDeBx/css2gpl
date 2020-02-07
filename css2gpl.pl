@@ -46,6 +46,7 @@ my $version = '0.1' ;
 my $fCss ;    # descripteur fichier CSS
 my $fGpl ;    # descripteur fichier GPL
 my $Header       = "GIMP Palette\nName: %s\nColumns: %s\n#\n" ;    # en tête du fichier GIMP
+my $Body         = "" ;                                            # corps du fichier GIMP
 my %ColorComment = () ;
 ;    # ligne du fichier gpl :  <Rouge> <Vert> <Bleu> <Commentaires>
 
@@ -247,15 +248,31 @@ sub writeHeaderFileGpl
     my $NoExt = '(.+?)(\.[^\.]*+$|$)' ;    #suppr toute extension (.+?)(\.[^\.]+$|$)
     $f =~ /$NoExt/ ;
     open( $fGpl, ">", $1 . ".gpl" ) ;
-    printf( "${Header}",       $n, $c ) ;
+    printf( "${Header}",       $n, $c ) ;    # sortie ecran
     printf( $fGpl "${Header}", $n, $c ) ;
+  }
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# Ouvre en ecriture le fichier GPL ecrit le body
+# param: nom du fichier
+# return: KeDal
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub writeBodyFileGpl
+  {
+    my $f     = shift @_ ;
+    my $NoExt = '(.+?)(\.[^\.]*+$|$)' ;    #suppr toute extension (.+?)(\.[^\.]+$|$)
+    $f =~ /$NoExt/ ;
+    open( $fGpl, ">>", $1 . ".gpl" ) ;
+    print($Body ) ;                        #sortie ecran
+    return my $success = print $fGpl $Body ;
   }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # Ouvre en lecture le fichier CSS à analyser
 # param: nom du fichier
-# return: à l'ecran (version alpha) les coulerus et commentaire format GPL
+# return: à l'ecran (version alpha) les couleurs et commentaire format GPL
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub readFileCss
   {
@@ -267,22 +284,24 @@ sub readFileCss
         chomp $l ;
         if ( extractHexa($l) ne '' )
           {
-            print doLineGpl( hexa2rgb( extractHexa($l) ), extractComment($l) ), "\n" ;
+            $Body .= doLineGpl( hexa2rgb( extractHexa($l) ), extractComment($l) ) . "\n" ;
 
           }
         if ( extractRgbHsl($l) ne '' )
           {
-            print doLineGpl( extractRgbHsl($l), extractComment($l) ), "\n" ;
+            $Body .= doLineGpl( extractRgbHsl($l), extractComment($l) ) . "\n" ;
           }
         my @colorNameRgb = extractColorNamed($l) ;
         if (@colorNameRgb)
           {
             foreach my $rgb (@colorNameRgb)
               {
-                print doLineGpl( $rgb, extractComment($l) ), "\n" ;
+                $Body .= doLineGpl( $rgb, extractComment($l) ) . "\n" ;
               }
           }
       }
+    $Body = join( "\n", sort split( "\n", $Body ) ) ;
+    return $Body ;
   }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -636,6 +655,7 @@ loadFileCss($File) ;
 print "\nEcriture du fichier gpl\n\n" ;
 writeHeaderFileGpl($FileGpl) ;
 readFileCss($File) ;
+writeBodyFileGpl($FileGpl) ;
 
 # ZONE TEST ====================================================================================
 #test doLineGpl

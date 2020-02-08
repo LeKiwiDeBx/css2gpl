@@ -248,6 +248,7 @@ sub writeHeaderFileGpl
     my $NoExt = '(.+?)(\.[^\.]*+$|$)' ;    #suppr toute extension (.+?)(\.[^\.]+$|$)
     $f =~ /$NoExt/ ;
     open( $fGpl, ">", $1 . ".gpl" ) ;
+
     printf( "${Header}",       $n, $c ) ;    # sortie ecran
     printf( $fGpl "${Header}", $n, $c ) ;
   }
@@ -264,6 +265,7 @@ sub writeBodyFileGpl
     my $NoExt = '(.+?)(\.[^\.]*+$|$)' ;    #suppr toute extension (.+?)(\.[^\.]+$|$)
     $f =~ /$NoExt/ ;
     open( $fGpl, ">>", $1 . ".gpl" ) ;
+
     print($Body ) ;                        #sortie ecran
     return my $success = print $fGpl $Body ;
   }
@@ -285,7 +287,6 @@ sub readFileCss
         if ( extractHexa($l) ne '' )
           {
             $Body .= doLineGpl( hexa2rgb( extractHexa($l) ), extractComment($l) ) . "\n" ;
-
           }
         if ( extractRgbHsl($l) ne '' )
           {
@@ -300,7 +301,22 @@ sub readFileCss
               }
           }
       }
-    $Body = join( "\n", sort split( "\n", $Body ) ) ;
+    my @sBody = split( "\n", $Body ) ;
+    my %ssBody ;    # hash pour dedoublonner sur clé unique (tant pis pour les commentaires)
+    foreach my $s (@sBody)
+      {
+        if ( $s =~ m/^(\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}\s+)(.*)$/g )
+          {
+            $ssBody{$1} = $1 . $2 ;    #cle est la valeur <r g b> que l'on veut dedoublonner
+          }
+      }
+    $Body = "" ;
+    foreach my $k ( keys(%ssBody) )
+      {
+        $Body .= $ssBody{$k} . "\n" ;    # on recupere les lignes dedoublonnées
+      }
+    $Body = join( "\n", sort split( "\n", $Body ) ) ; #on tri ordre croissant par defaut
+    # print $Body ;
     return $Body ;
   }
 

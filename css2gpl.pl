@@ -11,7 +11,7 @@
 #               color: #ff0; /*What...is your favorite color? blue, No, yel-- auuuuuugh!*/
 #             devient la ligne gpl
 #               255 255 0 What...is your favorite color? blue, No, yel-- auuuuuugh!
-# version:    alpha 0.1
+# version:    beta 1.0
 # usage:      perl css2gpl.pl -i=<nomFichier.css> [-o=<nomFichierPalette[.gpl]>] [-n=<nomPalette>] [-c=<nbreColonne>]
 # author:     LeKiwiDeBx
 # date:       27/01/2020
@@ -700,7 +700,7 @@ sub doLineGpl
 
 #  ___________________________________________________________________________
 # |                                                                           |
-# |                         </{Version α}>     (°}<Ouais!                     |
+# |                         </{Version β 1.0}>     (°}<Ouais!                 |
 # |___________________________________________________________________________|
 my $File    = $i ;    # recupere 1er argument
 my $FileGpl = $o ;    # recupere 2e argument

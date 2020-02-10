@@ -17,7 +17,7 @@
 # date:       27/01/2020
 # disclaimer: [=     This code is written by humans for humans ® (°}<Yeah!    =]
 #
-#      Copyright  © 2020 </{LeKiwiDeBx}>  GNU General Public License
+#      Copyright  © 2020 </{LeKiwiDeBx}>  GNU General Public License  ★★★★★
 #
 #
 #  This file is part of css2gpl.pl.
@@ -42,7 +42,7 @@
 use strict ;
 use warnings ;
 use File::Basename ;
-my $version = '0.1' ;
+my $version = 'Beta 1.0' ;
 my $fCss ;    # descripteur fichier CSS
 my $fGpl ;    # descripteur fichier GPL
 my $Header       = "GIMP Palette\nName: %s\nColumns: %s\n#\n" ;    # en tête du fichier GIMP
@@ -206,6 +206,9 @@ my %IDlistNameColor = (
                         'yellow'               => 'FFFF00',
                         'yellowgreen'          => '9ACD32',
                       ) ;
+print "\n  ⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺\n";
+print "       Iｔ'ｓ 𝒂     \n", "         ★   ★      \n","       K I W I      \n     ｓｃｒｉｐｔ  ✔ \n";
+print "  ⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽⎽\n";
 print "\nProgramme de création d'une palette .gpl à partir d'un fichier css\n" ;
 print "version: $version\n" ;
 

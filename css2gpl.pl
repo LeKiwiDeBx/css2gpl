@@ -12,7 +12,7 @@
 #             devient la ligne gpl
 #               255 255 0 What...is your favorite color? blue, No, yel-- auuuuuugh!
 # version:    alpha 0.1
-# usage:      perl css2gpl.pl -i=<nomFichier.css> -o=<nomFichierPalette[.gpl]> -n=<nomPalette> -c=<nbreColonne>
+# usage:      perl css2gpl.pl -i=<nomFichier.css> [-o=<nomFichierPalette[.gpl]>] [-n=<nomPalette>] [-c=<nbreColonne>]
 # author:     LeKiwiDeBx
 # date:       27/01/2020
 # disclaimer: [=     This code is written by humans for humans ® (°}<Yeah!    =]
@@ -217,8 +217,6 @@ sub remainder
   {
     my ( $a, $b ) = @_ ;
     return 0 unless $b && $a ;
-
-    # print $a / $b - int( $a / $b );
     return $a / $b - int( $a / $b ) ;
   }
 
@@ -231,42 +229,84 @@ sub remainder
 sub loadFileCss
   {
     my $f = shift @_ ;
-    print "\nRecherche le fichier: " . basename($f) . "\n" ;
-    open( $fCss, "<", $f )
-      or die "Echec ouverture du fichier css : $!" ;
+    print "\nRecherche le fichier: " . basename($f) . "\n" if defined $f ;
+    if ( defined $f )
+      {
+        open( $fCss, "<", $f )
+          or die "Echec ouverture du fichier $f : $!" ;
+        print "\nOuverture du fichier $f" ;
+      }
+    else { die "Nom du fichier css inconnu." }
   }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # Ouvre en ecriture le fichier GPL a crèer et ecrit l'en tête GPL
-# param: nom du fichier
+# param: nom du fichier .gpl à creer
+# param: fichier css source
 # return:
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub writeHeaderFileGpl
   {
-    my $f     = shift @_ ;
+    my ( $f, $css ) = @_ ;
     my $NoExt = '(.+?)(\.[^\.]*+$|$)' ;    #suppr toute extension (.+?)(\.[^\.]+$|$)
-    $f =~ /$NoExt/ ;
-    open( $fGpl, ">", $1 . ".gpl" ) ;
-
-    printf( "${Header}",       $n, $c ) ;    # sortie ecran
-    printf( $fGpl "${Header}", $n, $c ) ;
+    if ( defined $f )
+      {
+        unless ( $f =~ /^(\w+)/ ) { $f = $css ; }
+        if ( defined( $f =~ /$NoExt/ ) && length($f) != 0 )
+          {
+            die "Le fichier $1.gpl existe. Choisir une autre nom ou le supprimer\n" if -e "$1.gpl" ;
+            open( $fGpl, ">", $1 . ".gpl" ) or die "Echec ecriture du fichier : $1.gpl!" ;
+            $n = $1 unless defined $n ;
+          }
+        else { die "Echec ecriture du fichier gpl" ; }
+      }
+    else
+      {
+        if ( $css =~ /$NoExt/ )
+          {
+            die "Le fichier $1.gpl existe. Choisir une autre nom ou le supprimer\n" if -e "$1.gpl" ;
+            open( $fGpl, ">", $1 . ".gpl" ) or die "Echec ecriture du fichier : $1.gpl!" ;
+            $n = $1 unless defined $n ;
+          }
+        else { die "Echec ecriture du fichier gpl" ; }
+      }
+    $n =~ s/^\s+|\s+$//g if defined $n ;
+    if ( defined $c ) { $c = 1 unless ( $c =~ /^\d+$/ ) }
+    else              { $c = 1 ; }
+    my $datestring = localtime() ;
+    $c .= "\n" . "#\n# Initial file: $css" . "\n" . "# Create: $datestring" ;
+    printf( "${Header}", $n, $c ) ;    # sortie ecran
+    return my $success = printf( $fGpl "${Header}", $n, $c ) ;
   }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #
 # Ouvre en ecriture le fichier GPL ecrit le body
 # param: nom du fichier
-# return: KeDal
+# return: succes de l'ecriture
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub writeBodyFileGpl
   {
-    my $f     = shift @_ ;
+    my ( $f, $css ) = @_ ;
     my $NoExt = '(.+?)(\.[^\.]*+$|$)' ;    #suppr toute extension (.+?)(\.[^\.]+$|$)
-    $f =~ /$NoExt/ ;
-    open( $fGpl, ">>", $1 . ".gpl" ) ;
-
-    print($Body ) ;                        #sortie ecran
+    if ( defined $f )
+      {
+        unless ( $f =~ /^(\w+)/ ) { $f = $css ; }
+        if ( defined( $f =~ /$NoExt/ ) && length($f) != 0 )
+          {
+            open( $fGpl, ">>", $1 . ".gpl" ) or die "Echec ecriture du fichier : $1.gpl!" ;
+          }
+      }
+    else
+      {
+        if ( $css =~ /$NoExt/ )
+          {
+            open( $fGpl, ">>", $1 . ".gpl" ) or die "Echec ecriture du fichier : $1.gpl!" ;
+          }
+        else { die "Echec ecriture du fichier gpl" ; }
+      }
+    print($Body ) ;    #sortie ecran
     return my $success = print $fGpl $Body ;
   }
 
@@ -302,21 +342,19 @@ sub readFileCss
           }
       }
     my @sBody = split( "\n", $Body ) ;
-    my %ssBody ;    # hash pour dedoublonner sur clé unique (tant pis pour les commentaires)
+    my %hashBody ;    # hash pour dedoublonner sur clé unique (tant pis pour les commentaires)
     foreach my $s (@sBody)
       {
         if ( $s =~ m/^(\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}\s+)(.*)$/g )
           {
-            $ssBody{$1} = $1 . $2 ;    #cle est la valeur <r g b> que l'on veut dedoublonner
+            $hashBody{$1} = $1 . $2 ;    #cle est la valeur <r g b> que l'on veut dedoublonner
           }
       }
-    $Body = "" ;
-    foreach my $k ( keys(%ssBody) )
+    $Body = "" ;                         #on reconstruit le $Body
+    foreach my $k ( sort keys %hashBody )
       {
-        $Body .= $ssBody{$k} . "\n" ;    # on recupere les lignes dedoublonnées
+        $Body .= $hashBody{$k} . "\n" ;    # on recupere les lignes dedoublonnées triées croissant
       }
-    $Body = join( "\n", sort split( "\n", $Body ) ) ; #on tri ordre croissant par defaut
-    # print $Body ;
     return $Body ;
   }
 
@@ -516,7 +554,8 @@ sub extractRgbHsl
 sub hsl2Rgb
   {
     my ( $h, $s, $l ) = @_ ;
-    ( $h, $s, $l ) = ( sprintf( "%.5f", $h / 360.0 ), sprintf( "%.5f", $s / 100.0 ), sprintf( "%.5f", $l / 100.0 ) ) ;
+    ( $h, $s, $l ) =
+      ( sprintf( "%.5f", $h / 360.0 ), sprintf( "%.5f", $s / 100.0 ), sprintf( "%.5f", $l / 100.0 ) ) ;
     my ( $r, $g, $b ) = ( $l * 255.0, $l * 255.0, $l * 255.0 ) ;
     if ( $s != 0.0 )
       {
@@ -657,8 +696,6 @@ sub doLineGpl
       {
         return ( sprintf( "%3d %3d %3d ", $r, $g, $b ) . $ColorComment{$color} ) ;
       }
-
-    #print "\nDoLineGpl: \n", join( "\n", %ColorComment );
   }
 
 #  ___________________________________________________________________________
@@ -668,22 +705,8 @@ sub doLineGpl
 my $File    = $i ;    # recupere 1er argument
 my $FileGpl = $o ;    # recupere 2e argument
 loadFileCss($File) ;
-print "\nEcriture du fichier gpl\n\n" ;
-writeHeaderFileGpl($FileGpl) ;
 readFileCss($File) ;
-writeBodyFileGpl($FileGpl) ;
-
-# ZONE TEST ====================================================================================
-#test doLineGpl
-my $colorTest_1   = "15 14 13" ;
-my $colorTest_2   = "127 0 96" ;
-my $commentTest_1 = "commentaire 1" ;
-my $commentTest_2 = "commentaire 2" ;
-my $commentTest_3 = "commentaire 3" ;
-
-# doLineGpl( $colorTest_1, $commentTest_1 );
-# doLineGpl( $colorTest_1, $commentTest_2 );
-# doLineGpl( $colorTest_2, $commentTest_3 );
-#print "couleur : ", colorName2rgb("Chocolate");    #D2691E
-# print extractColorNamed("div {  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);}"  );
+print "\nEcriture du fichier gpl\n\n" ;
+writeHeaderFileGpl( $FileGpl, $File ) ;
+writeBodyFileGpl( $FileGpl, $File ) ;
 print "\n" ;

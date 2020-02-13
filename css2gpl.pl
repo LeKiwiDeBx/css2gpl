@@ -55,7 +55,7 @@ use vars qw/ $i / ;    # fichier entrée texte ie -s="boCss.css"
 use vars qw/ $o / ;    # fichier gpl sans extension .gpl ie -o="TheGpl"
 use vars qw/ $n / ;    # nom de la palette ie: -n="namePalette"
 use vars qw/ $c / ;    # nombre de columns a presenter -c=6
-my $patternComment = ';\s*\/\*(.*)\*\/' ;    #extrait commentaire bout de ligne
+
 my %IDlistNameColor = (
                         'aliceblue'            => 'F0F8FF',
                         'antiquewhite'         => 'FAEBD7',
@@ -371,6 +371,7 @@ sub readFileCss
 sub extractComment
   {
     my $line = shift @_ ;
+    my $patternComment = ';\s*\/\*(.*)\*\/' ;    #extrait commentaire bout de ligne
     if ( $line =~ /$patternComment/ )
       {
         my $cmt = $1 ;
@@ -396,7 +397,7 @@ sub extractHexa
     if ( $line =~ /$pattern/ )
       {
         $match = defined $1 ? $1 : $2 ;
-        print "\nmatch:|$match|" ;
+        # print "\nmatch:|$match|" ;
         return $match ;
       }
     else { return $match ; }
@@ -455,7 +456,7 @@ sub extractRgbHsl
       {
         my @rgb ;
         my ( $t, $r, $g, $b ) = ( $1, $2 * 2.55, $3 * 2.55, $4 * 2.55 ) ;
-        $sRgb = sprintf( "%3.f %3.f %3.f", $r, $g, $b ) ;    #arrondi float
+        $sRgb = sprintf( "%3.0f %3.0f %3.0f", $r, $g, $b ) ;    #arrondi float
         $sRgb =~ s/^\s+|\s+$//g ;
         return $sRgb ;
       }
@@ -571,9 +572,9 @@ sub hsl2Rgb
         $g = 255 * hue2Rgb( $var_1, $var_2, $h ) ;
         $b = 255 * hue2Rgb( $var_1, $var_2, $h - ( 1.0 / 3.0 ) ) ;
       }
-    my $sRgb = sprintf( "%3.f %3.f %3.f", $r, $g, $b ) ;    #arrondi float
+    my $sRgb = sprintf( "%3.0f %3.0f %3.0f", $r, $g, $b ) ;    #arrondi float
     $sRgb =~ s/^\s+|\s+$//g ;
-    print "\nhsl2Rgb |$sRgb|" ;
+    # print "\nhsl2Rgb |$sRgb|" ;
     return $sRgb ;
   }
 
@@ -616,7 +617,7 @@ sub hexa2rgb
     if ( length($hexa) == 6 )
       {
         push @rgb, substr( $hexa, 0, 2 ), substr( $hexa, 2, 2 ), substr( $hexa, 4, 2 ) ;
-        print "\nhexa2rgb 6 digit ", $rgb[0] . " " . $rgb[1] . " " . $rgb[2] ;
+        # print "\nhexa2rgb 6 digit ", $rgb[0] . " " . $rgb[1] . " " . $rgb[2] ;
 
         #debug BEGIN
         # test s//eg  TEST OK!
@@ -628,7 +629,7 @@ sub hexa2rgb
     elsif ( length($hexa) == 3 )
       {
         push @rgb, substr( $hexa, 0, 1 ) x 2, substr( $hexa, 1, 1 ) x 2, substr( $hexa, 2, 1 ) x 2 ;
-        print "\nhexa2rgb 3 digit ", $rgb[0] . " " . $rgb[1] . " " . $rgb[2] ;
+        #print "\nhexa2rgb 3 digit ", $rgb[0] . " " . $rgb[1] . " " . $rgb[2] ;
       }
     else { return $sRgb ; }
     foreach (@rgb)
@@ -637,7 +638,7 @@ sub hexa2rgb
       }
 
     $sRgb =~ s/^\s+|\s+$//g ;    #trim blanc debut et final
-    print "\nhexa2rgb |$sRgb|" ;
+    #print "\nhexa2rgb |$sRgb|" ;
     return $sRgb ;
   }
 
@@ -652,10 +653,10 @@ sub rgb2hexa
     my $rgb = shift @_ ;
 
     # $rgb =~ s/^\s+|\s+$//g ;
-    print "\nrgb2hexa debut |$rgb|" ;
+    # print "\nrgb2hexa debut |$rgb|" ;
     $rgb =~
       s/(?:0{0,2})(\d+)/$1/g ;    # enleve les 1 ou 2 zero debut de chaque r g b, ie: 009 -> 9 | 080 -> 80 | 125 ->125
-    print "\nrgb2hexa fin |$rgb|" ;
+    # print "\nrgb2hexa fin |$rgb|" ;
 
     my ( $r, $g, $b ) = split /\s+/, $rgb ;
     my $hexa = sprintf( "\%2.2X\%2.2X\%2.2X", $r, $g, $b ) ;    #3x2digits complete par 0
@@ -692,7 +693,7 @@ sub colorName2rgb
 sub doLineGpl
   {
     my ( $color, $comment ) = @_ ;
-    print "\ndoLineGpl debut |$color|" ;
+    # print "\ndoLineGpl debut |$color|" ;
     $color =~ s/(?:0{0,2})(\d+)\s*/ $1/g ;    #attention à garder l'espace avant $1
     $color =~ s/^\s+|\s+$//g ;
 
@@ -705,7 +706,7 @@ sub doLineGpl
       {
         $ColorComment{$color} .= " " . $comment ;
       }
-    print "\ndoLineGpl fin |$color|" ;
+    # print "\ndoLineGpl fin |$color|" ;
     my ( $r, $g, $b ) = split( /\s+/, $color ) ;    #recupere les r g b sur les espaces
     my %rIDlistNameColor = reverse %IDlistNameColor ;
     if ( exists( $rIDlistNameColor{ rgb2hexa($color) } ) )

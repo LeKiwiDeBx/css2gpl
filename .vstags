@@ -1,0 +1,21 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+colorName2rgb	css2gpl.pl	663;"	s
+doLineGpl	css2gpl.pl	684;"	s
+extractColorNamed	css2gpl.pl	413;"	s
+extractComment	css2gpl.pl	372;"	s
+extractHexa	css2gpl.pl	393;"	s
+extractRgbHsl	css2gpl.pl	441;"	s
+hexa2rgb	css2gpl.pl	610;"	s
+hsl2Rgb	css2gpl.pl	559;"	s
+hue2Rgb	css2gpl.pl	590;"	s
+loadFileCss	css2gpl.pl	233;"	s
+readFileCss	css2gpl.pl	324;"	s
+remainder	css2gpl.pl	220;"	s
+rgb2hexa	css2gpl.pl	647;"	s
+writeBodyFileGpl	css2gpl.pl	294;"	s
+writeHeaderFileGpl	css2gpl.pl	254;"	s

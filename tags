@@ -4,18 +4,6 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-colorName2rgb	css2gpl.pl	/^sub colorName2rgb$/;"	s
-doLineGpl	css2gpl.pl	/^sub doLineGpl$/;"	s
-extractColorNamed	css2gpl.pl	/^sub extractColorNamed$/;"	s
-extractComment	css2gpl.pl	/^sub extractComment$/;"	s
-extractHexa	css2gpl.pl	/^sub extractHexa$/;"	s
-extractRgbHsl	css2gpl.pl	/^sub extractRgbHsl$/;"	s
-hexa2rgb	css2gpl.pl	/^sub hexa2rgb$/;"	s
-hsl2Rgb	css2gpl.pl	/^sub hsl2Rgb$/;"	s
-hue2Rgb	css2gpl.pl	/^sub hue2Rgb$/;"	s
-loadFileCss	css2gpl.pl	/^sub loadFileCss$/;"	s
-readFileCss	css2gpl.pl	/^sub readFileCss$/;"	s
-remainder	css2gpl.pl	/^sub remainder$/;"	s
-rgb2hexa	css2gpl.pl	/^sub rgb2hexa$/;"	s
-writeBodyFileGpl	css2gpl.pl	/^sub writeBodyFileGpl$/;"	s
-writeHeaderFileGpl	css2gpl.pl	/^sub writeHeaderFileGpl$/;"	s
+remainder	rgb2hsv.pl	/^sub remainder {$/;"	s
+rgb2hsv	rgb2hsv.pl	/^sub rgb2hsv {    #pour le tri de palette methode GIMP$/;"	s
+sortHsv	rgb2hsv.pl	/^sub sortHsv {$/;"	s

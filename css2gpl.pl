@@ -40,7 +40,7 @@
 #   `-'(. .)`-'
 #       \_/
 #                                                     GNU General Public License
-use strict;
+use strict; 
 use warnings;
 use File::Basename;
 my $version = 'Beta 1.0';

@@ -3,27 +3,10 @@
 # H: position in the spectrum
 # S: color saturation ("purity")
 # V: color brightness
-#
-# def rgb_to_hsv(r, g, b):
-#     maxc = max(r, g, b)
-#     minc = min(r, g, b)
-#     v = maxc
-#     if minc == maxc:
-#         return 0.0, 0.0, v
-#     s = (maxc-minc) / maxc
-#     rc = (maxc-r) / (maxc-minc)
-#     gc = (maxc-g) / (maxc-minc)
-#     bc = (maxc-b) / (maxc-minc)
-#     if r == maxc:
-#         h = bc-gc
-#     elif g == maxc:
-#         h = 2.0+rc-bc
-#     else:
-#         h = 4.0+gc-rc
-#     h = (h/6.0) % 1.0
-#     return h, s, v
+# script de test et mise au point
 use strict;
 use warnings;
+use POSIX;
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Simule un modulo
@@ -37,13 +20,13 @@ sub remainder {
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Converti rgb en hsv
-# param : liste rgb forme r[0..255] g[0..255] b[0..255]
+# param : ligne rgb forme: r[0..255] g[0..255] b[0..255] Blalblabla...
 # return : list hsv forme @hsv
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub rgb2hsv {    #pour le tri de palette methode GIMP
     my @rgb = @_;
-    my ( $red, $green, $blue ) = @rgb;
-    my @rgbs = ( sort { $a <=> $b } @rgb );
+    my ( $red, $green, $blue ) = @_;    #@rgb
+    my @rgbs = ( sort { $a <=> $b } ( $red, $green, $blue ) );    # @rgb
     my ( $minc, $maxc ) = ( $rgbs[0], pop(@rgbs) );
     my $v = $maxc / 255.0;
     return ( 0.0, 0.0, sprintf( "%3.1f", $v * 100 ) ) if $minc == $maxc;
@@ -63,12 +46,12 @@ sub rgb2hsv {    #pour le tri de palette methode GIMP
     else {
         $h = 4.0 + $gc - $rc;
     }
-    $h = sprintf( "%3.f", 360 * remainder( $h, 6 ) );    # sur 360 degrée
+    $h = sprintf( "%.f", 360 * remainder( $h, 6 ) );    # sur 360 degrée
     $h += 360 if $h < 0;
-    $s = sprintf( "%3.1f", $s * 100 );
-    $v = sprintf( "%3.1f", $v * 100 );
+    $s = sprintf( "%.1f", $s * 100 );
+    $v = sprintf( "%.1f", $v * 100 );
     my @result = ( $h, $s, $v );
-    return @result;
+    return ( $h, $s, $v );
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -80,47 +63,33 @@ sub rgb2hsv {    #pour le tri de palette methode GIMP
 # return : list hsv forme @hsv
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub sortHsv {
-    my @hsvList   = shift @_;
-    # foreach(@hsvList){ print "hsvLis", $_ };
+    my $hsvList   = shift @_;
     my $criterion = shift @_;
     my $order     = shift @_;
     my @out       = ();
-    my ( $h, $s, $v ) = ( 0, 1, 2 );
-    if ( $criterion == 1 ) {
-        ( $h, $s ) = ( $s, $h );
-    }
-    elsif ( $criterion == 2 ) {
-        ( $h, $v ) = ( $v, $h );
-    }
-    @out = sort {
-             ( split ' ', $a, 3 )[$h] <=> ( split ' ', $b, 3 )[$h]
-          || ( split ' ', $a, 3 )[$s] <=> ( split ' ', $b, 3 )[$s]
-          || ( split ' ', $a, 3 )[$v] <=> ( split ' ', $b, 3 )[$v]
-    } @hsvList;
-    if ($order) { @hsvList = reverse @hsvList }
-    return @hsvList;
+    my ( $h, $s, $v );
+    ( $criterion == 1 )
+      ? ( $h, $s, $v ) = ( 1, 2, 0 )    # S puis V puis H
+      : ( $criterion == 2 ) ? ( $h, $s, $v ) = ( 2, 0, 1 )    # V puis H puis S
+      :                       $h = 0, $s = 1, $v = 2;         # H puis S puis V
+    @out =
+      map  { $_->[0] }
+      sort { $a->[1] <=> $b->[1] || $a->[2] <=> $b->[2] || $a->[3] <=> $b->[3] }
+      map  { [ $_, (split)[ $h, $s, $v ] ] } @{$hsvList};
+    if ($order) { @out = reverse @out }
+    return @out;
 }
 
 # __main__
-
-my @data      = <DATA>;
-my %data2sort = ();
-my($h ,$s, $v);
-foreach (@data) {
-    print "data : ", $_;
-    my($h ,$s, $v) = rgb2hsv( split " ", $_ );
-    $data2sort{$h." ".$s." ".$v} = $_ ;
-    printf "h : %s° s : %s%% v : %s%%\n",rgb2hsv( split " ", $_ );    #$h, $s, $v;
+my @data = <DATA>;
+my %data2sort;
+my ( $h, $s, $v );
+foreach my $rgb (@data) {
+    my ( $h, $s, $v ) = rgb2hsv( split " ", $rgb );
+    $data2sort{ $h . " " . $s . " " . $v } = $rgb;
 }
-# print "nbre element data2sort :", scalar @data2sort, "\n" ;
- foreach my $key (keys %data2sort) {
-      printf "debug : %s cle: %s\n", $data2sort{$key}, $key;
- }
-# my @dataSorted = sortHsv( @data2sort, 0, 0 );
-# print "\n###### sortie triées ##########\n";
-# foreach (@dataSorted) {
-#    # print $_, "\n";
-# }
+my @keyData    = keys %data2sort;
+my @dataSorted = sortHsv( \@keyData, 0, 0 );    # trie sur les clés
 
 #______________________ ZONE DATA TEST _______________________#
 # R   G   B          H°   S%    V%
@@ -130,10 +99,18 @@ foreach (@data) {
 #185 200  12         65  94    78.4
 # 69  32 122        265  73.8  47.8
 #229  35  10          7  95.6  89.8
+#136 115 115          0  15.4  53.3
+#133 113 112          3  15.8  52.2
+# 64  53  54        355  17.2  25.1
+#153 129 129          0  15.7  60
 __END__
-136 116 115
-25 12 255
+136 116 115 #887374 couleur de fond
+ 25 12 255
 136 12 160
 185 200 12
 69 32 122
 229 35 10
+136 115 115 #probleme
+133 113 112
+64 53 54
+153 129 129

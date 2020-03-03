@@ -1,0 +1,16 @@
+GIMP Palette
+Name: test2
+Columns: 1
+#
+# Initial file: test2.css
+# Create: Fri Feb 28 18:28:11 2020
+#
+  0   0   0 000000 black                                                                
+  0   0 255 0000FF blue                                                                 
+ 55  55  55 373737 
+ 63 135 166 3F87A6 
+136 136 136 888888 
+221 221 221 DDDDDD 
+235 248 225 EBF8E1 
+246 157  60 F69D3C 
+255 255 255 FFFFFF white                                                                

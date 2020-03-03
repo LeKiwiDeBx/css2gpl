@@ -17,10 +17,10 @@ hue2Rgb	css2gpl.pl	558;"	s
 loadFileCss	css2gpl.pl	235;"	s
 readFileCss	css2gpl.pl	322;"	s
 remainder	css2gpl.pl	223;"	s
-remainder	rgb2hsv.pl	32;"	s
+remainder	rgb2hsv.pl	15;"	s
 rgb2hexa	css2gpl.pl	611;"	s
 rgb2hsv	css2gpl.pl	628;"	s
-rgb2hsv	rgb2hsv.pl	43;"	s
-sortHsv	rgb2hsv.pl	82;"	s
+rgb2hsv	rgb2hsv.pl	26;"	s
+sortHsv	rgb2hsv.pl	65;"	s
 writeBodyFileGpl	css2gpl.pl	295;"	s
 writeHeaderFileGpl	css2gpl.pl	254;"	s

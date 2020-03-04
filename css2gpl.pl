@@ -627,8 +627,8 @@ sub rgb2hexa {
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub rgb2hsv {    #pour le tri de palette methode GIMP
 my @rgb = @_;
-    my ( $red, $green, $blue ) = @rgb;
-    my @rgbs = ( sort { $a <=> $b } @rgb );
+    my ( $red, $green, $blue ) = @_;    #@rgb
+    my @rgbs = ( sort { $a <=> $b } ( $red, $green, $blue ) );    # @rgb
     my ( $minc, $maxc ) = ( $rgbs[0], pop(@rgbs) );
     my $v = $maxc / 255.0;
     return ( 0.0, 0.0, sprintf( "%3.1f", $v * 100 ) ) if $minc == $maxc;
@@ -648,11 +648,39 @@ my @rgb = @_;
     else {
         $h = 4.0 + $gc - $rc;
     }
-    $h = sprintf( "%3.f", 360 * remainder( $h, 6 ) );    # sur 360 degrée
+    $h = sprintf( "%.f", 360 * remainder( $h, 6 ) );    # sur 360 degrée
     $h += 360 if $h < 0;
-    $s = sprintf( "%3.1f", $s * 100 );
-    $v = sprintf( "%3.1f", $v * 100 );
+    $s = sprintf( "%.1f", $s * 100 );
+    $v = sprintf( "%.1f", $v * 100 );
+    my @result = ( $h, $s, $v );
     return ( $h, $s, $v );
+}
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# trie la liste @hsv sur un critere au choix H(ue) ou S(aturation) ou V(alue) en sens
+# Ascendant 0 ou descendant 1. 
+# param 1 : liste @hsv sous la forme ("h1 s1 v1", [h s v],...) 
+# param 2 : critere H | S | V sous la forme 0 | 1 | 2
+# param 3 : sens du tri ascendant | descendant sous la forme 0 | 1
+# return : list hsv forme @hsv
+# remarques: /!\ Passage param1 par reference \@TABLEAU i.e. sortHsv( \@keyData, 0, 0 ); /!\
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub sortHsv {
+    my $hsvList   = shift @_;
+    my $criterion = shift @_;
+    my $order     = shift @_;
+    my @out       = ();
+    my ( $h, $s, $v );
+    ( $criterion == 1 )
+      ? ( $h, $s, $v ) = ( 1, 2, 0 )    # S puis V puis H
+      : ( $criterion == 2 ) ? ( $h, $s, $v ) = ( 2, 0, 1 )    # V puis H puis S
+      :                       $h = 0, $s = 1, $v = 2;         # H puis S puis V
+    @out =
+      map  { $_->[0] }
+      sort { $a->[1] <=> $b->[1] || $a->[2] <=> $b->[2] || $a->[3] <=> $b->[3] }
+      map  { [ $_, (split)[ $h, $s, $v ] ] } @{$hsvList};
+    if ($order) { @out = reverse @out }
+    return @out;
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

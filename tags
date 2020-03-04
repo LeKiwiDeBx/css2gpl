@@ -5,26 +5,73 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 File::Basename	css2gpl.pl	/^use File::Basename;$/;"	u
+POSIX	rgb2hsv.pl	/^use POSIX;$/;"	u
+cl	w3color.js	/^function cl(x) {$/;"	f
+cmykToRgb	w3color.js	/^function cmykToRgb(c, m, y, k) {$/;"	f
 colorName2rgb	css2gpl.pl	/^sub colorName2rgb {$/;"	s
+colorObject	w3color.js	/^function colorObject(rgb, a, h, s) {$/;"	f
 doLineGpl	css2gpl.pl	/^sub doLineGpl {$/;"	s
+emptyObject	w3color.js	/^function emptyObject() {$/;"	f
 extractColorNamed	css2gpl.pl	/^sub extractColorNamed {$/;"	s
 extractComment	css2gpl.pl	/^sub extractComment {$/;"	s
 extractHexa	css2gpl.pl	/^sub extractHexa {$/;"	s
 extractHexaList	css2gpl.pl	/^sub extractHexaList {$/;"	s
 extractRgbHsl	css2gpl.pl	/^sub extractRgbHsl {$/;"	s
+getColorArr	w3color.js	/^function getColorArr(x) {$/;"	f
 hexa2rgb	css2gpl.pl	/^sub hexa2rgb {$/;"	s
 hsl2Rgb	css2gpl.pl	/^sub hsl2Rgb {$/;"	s
+hslToRgb	w3color.js	/^function hslToRgb(hue, sat, light) {$/;"	f
 hue2Rgb	css2gpl.pl	/^sub hue2Rgb {$/;"	s
+hueToNcol	w3color.js	/^function hueToNcol(hue) {$/;"	f
+hueToRgb	w3color.js	/^function hueToRgb(t1, t2, hue) {$/;"	f
+hwbToRgb	w3color.js	/^function hwbToRgb(hue, white, black) {$/;"	f
+isHex	w3color.js	/^function isHex(x) {$/;"	f
 loadFileCss	css2gpl.pl	/^sub loadFileCss {$/;"	s
+ncolToRgb	w3color.js	/^function ncolToRgb(ncol, white, black) {$/;"	f
+ncsToRgb	w3color.js	/^function ncsToRgb(ncs){$/;"	f
+r	w3color.js	/^        rgb = {$/;"	p	class:rgb
+r	w3color.js	/^      rgb = {$/;"	p	class:rgb
+r	w3color.js	/^      rgb = {r : arr[0], g : arr[1], b : arr[2]};$/;"	p	class:rgb
 readFileCss	css2gpl.pl	/^sub readFileCss {$/;"	s
+red	w3color.js	/^  color = {$/;"	p	class:color
 remainder	css2gpl.pl	/^sub remainder {$/;"	s
+remainder	rgb2hsv.pl	/^sub remainder {$/;"	s
 rgb2hexa	css2gpl.pl	/^sub rgb2hexa {$/;"	s
 rgb2hsv	css2gpl.pl	/^sub rgb2hsv {    #pour le tri de palette methode GIMP$/;"	s
-strict	css2gpl.pl	/^use strict;$/;"	u
+rgb2hsv	rgb2hsv.pl	/^sub rgb2hsv {    #pour le tri de palette methode GIMP$/;"	s
+rgbToCmyk	w3color.js	/^function rgbToCmyk(r, g, b) {$/;"	f
+rgbToHsl	w3color.js	/^function rgbToHsl(r, g, b) {$/;"	f
+rgbToHwb	w3color.js	/^function rgbToHwb(r, g, b) {$/;"	f
+roundDecimals	w3color.js	/^function roundDecimals(c) {$/;"	f
+sortHsv	rgb2hsv.pl	/^sub sortHsv {$/;"	s
+strict	css2gpl.pl	/^use strict; $/;"	u
+strict	rgb2hsv.pl	/^use strict;$/;"	u
+toCmykString	w3color.js	/^  },$/;"	m	class:w3color
+toCmykStringDecimal	w3color.js	/^  },$/;"	m	class:w3color
+toColorObject	w3color.js	/^function toColorObject(c) {$/;"	f
+toHex	w3color.js	/^function toHex(n) {$/;"	f
+toHexString	w3color.js	/^  },$/;"	m	class:w3color
+toHslString	w3color.js	/^  },$/;"	m	class:w3color
+toHslStringDecimal	w3color.js	/^  },$/;"	m	class:w3color
+toHslaString	w3color.js	/^  },$/;"	m	class:w3color
+toHwbString	w3color.js	/^  },$/;"	m	class:w3color
+toHwbStringDecimal	w3color.js	/^  },$/;"	m	class:w3color
+toHwbaString	w3color.js	/^  },$/;"	m	class:w3color
+toName	w3color.js	/^  },$/;"	m	class:w3color
+toNcolString	w3color.js	/^  },$/;"	m	class:w3color
+toNcolStringDecimal	w3color.js	/^  },$/;"	m	class:w3color
+toNcolaString	w3color.js	/^  },$/;"	m	class:w3color
+toRgb	w3color.js	/^  },$/;"	m	class:w3color
+toRgbString	w3color.js	/^w3color.prototype = {$/;"	m	class:w3color
+toRgbaString	w3color.js	/^  },$/;"	m	class:w3color
 vars qw/ $c /	css2gpl.pl	/^use vars qw\/ $c \/;    # nombre de columns a presenter -c=6$/;"	u
 vars qw/ $i /	css2gpl.pl	/^use vars qw\/ $i \/;    # fichier entrée texte ie -s="boCss.css"$/;"	u
 vars qw/ $n /	css2gpl.pl	/^use vars qw\/ $n \/;    # nom de la palette ie: -n="namePalette"$/;"	u
 vars qw/ $o /	css2gpl.pl	/^use vars qw\/ $o \/;    # fichier gpl sans extension .gpl ie -o="TheGpl"$/;"	u
+w3SetColorsByAttribute	w3color.js	/^function w3SetColorsByAttribute() {$/;"	f
+w3color	w3color.js	/^}$/;"	c
+w3trim	w3color.js	/^function w3trim(x) {$/;"	f
 warnings	css2gpl.pl	/^use warnings;$/;"	u
+warnings	rgb2hsv.pl	/^use warnings;$/;"	u
 writeBodyFileGpl	css2gpl.pl	/^sub writeBodyFileGpl {$/;"	s
 writeHeaderFileGpl	css2gpl.pl	/^sub writeHeaderFileGpl {$/;"	s

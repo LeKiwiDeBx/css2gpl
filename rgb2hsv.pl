@@ -4,9 +4,11 @@
 # S: color saturation ("purity")
 # V: color brightness
 # script de test et mise au point
+use v5.14;
 use strict;
 use warnings;
 use POSIX;
+use Data::Dumper qw(Dumper);
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Simule un modulo
@@ -56,11 +58,12 @@ sub rgb2hsv {    #pour le tri de palette methode GIMP
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # trie la liste @hsv sur un critere au choix H(ue) ou S(aturation) ou V(alue) en sens
-# Ascendant 0 ou descendant 1
-# param 1 : liste @hsv sous la forme ("h1 s1 v1", [h s v],...)
+# Ascendant 0 ou descendant 1. 
+# param 1 : liste @hsv sous la forme ("h1 s1 v1", [h s v],...) 
 # param 2 : critere H | S | V sous la forme 0 | 1 | 2
 # param 3 : sens du tri ascendant | descendant sous la forme 0 | 1
 # return : list hsv forme @hsv
+# remarques: /!\ Passage param1 par reference \@TABLEAU i.e. sortHsv( \@keyData, 0, 0 ); /!\
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub sortHsv {
     my $hsvList   = shift @_;
@@ -82,12 +85,16 @@ sub sortHsv {
 
 # __main__
 my @data = <DATA>;
+my @test = map{[$_,  (split )[0,1,2] ]} @data ;
+#foreach (@test) { print $_->[0],":", $_->[1],$_->[2],$_->[3], "\n"};
+say Dumper \@test;
 my %data2sort;
 my ( $h, $s, $v );
 foreach my $rgb (@data) {
     my ( $h, $s, $v ) = rgb2hsv( split " ", $rgb );
     $data2sort{ $h . " " . $s . " " . $v } = $rgb;
 }
+say Dumper \%data2sort;
 my @keyData    = keys %data2sort;
 my @dataSorted = sortHsv( \@keyData, 0, 0 );    # trie sur les clés
 

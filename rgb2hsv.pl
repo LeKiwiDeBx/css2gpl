@@ -84,20 +84,30 @@ sub sortHsv {
 }
 
 # __main__
+my %testHash = ("123 116 115"=>"#AABBCC 123 116 155 blabla", "25 12 255"=>"#AABBCC 25 12 255 2emeblabla");
+print "dataHash \n";
+my @val = values %testHash ;
+say Dumper \@val;
 my @data = <DATA>;
-my @test = map{[$_,  (split )[0,1,2] ]} @data ;
+# my @test = map{[$_,  (split )[0,1,2] ]} @data ;
 #foreach (@test) { print $_->[0],":", $_->[1],$_->[2],$_->[3], "\n"};
-say Dumper \@test;
+#say Dumper \@data;
+print "rgb to hsv \n";
 my %data2sort;
 my ( $h, $s, $v );
 foreach my $rgb (@data) {
-    my ( $h, $s, $v ) = rgb2hsv( split " ", $rgb );
+    my ( $h, $s, $v,$c) = rgb2hsv( split " ", $rgb );
     $data2sort{ $h . " " . $s . " " . $v } = $rgb;
 }
-say Dumper \%data2sort;
+#say Dumper \%data2sort;
+print "tri sur les cles avec critere\n";
 my @keyData    = keys %data2sort;
-my @dataSorted = sortHsv( \@keyData, 0, 0 );    # trie sur les clés
-
+my @dataSorted = sortHsv( \@keyData, 0, 1 );    # trie sur les clés
+#say Dumper \@dataSorted;
+#say Dumper %data2sort{@dataSorted};
+print "Reindexation des lignes\n";
+my @final = @data2sort{@dataSorted} ;
+print @final ;
 #______________________ ZONE DATA TEST _______________________#
 # R   G   B          H°   S%    V%
 #136 116 115          3  15.4  53.3
@@ -112,7 +122,7 @@ my @dataSorted = sortHsv( \@keyData, 0, 0 );    # trie sur les clés
 #153 129 129          0  15.7  60
 __END__
 136 116 115 #887374 couleur de fond
- 25 12 255
+25 12 255
 136 12 160
 185 200 12
 69 32 122

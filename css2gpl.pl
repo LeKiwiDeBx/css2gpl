@@ -359,8 +359,25 @@ sub readFileCss {
         }
     }
     $Body = "";           #on reconstruit le $Body
-                          # __zone_de_tri__
-      # my @rgbs = (sort { $b <=> $a } @rgb); descendant, il y'a plus rapide: (reverse sort keys %hashBody)
+     ##################       __zone_de_tri__       #############################
+     ################## using functions:                                        #
+     ################## sortHsv(adresse tableau, critere tri, sens tri)         #
+     ################## rgb2hsv( liste(r,g,b) )                                 #
+     ##################                                                         #
+     ############################################################################
+    # Si tri RGB
+    #       Si croissant:
+    #       tri sur R ou G ou B la cle hashBody 
+    #       Sinon 
+    #       inverse tri sur R ou G ou B la cle hashBody
+    # Sinon tri HSV
+    #       convertir rgb de la cle en hsv
+    #           Si croissant:
+    #           tri sur H ou S ou V le hsv croissant
+    #           Sinon
+    #           inverse tri sur H ou S ou V le hsv croissant    
+    #      sauvegarde dans @rray du hashBody{avec les clés tries} i.e. @final = (@data2sort  #     {@dataSorted}) ;
+    #############################################################################
     foreach my $k ( sort keys %hashBody )    # tri croissant rgb
     {
         $Body .= $hashBody{$k}

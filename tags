@@ -4,6 +4,7 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Data::Dumper qw(Dumper)	rgb2hsv.pl	/^use Data::Dumper qw(Dumper);$/;"	u
 File::Basename	css2gpl.pl	/^use File::Basename;$/;"	u
 POSIX	rgb2hsv.pl	/^use POSIX;$/;"	u
 cl	w3color.js	/^function cl(x) {$/;"	f
@@ -43,6 +44,7 @@ rgbToCmyk	w3color.js	/^function rgbToCmyk(r, g, b) {$/;"	f
 rgbToHsl	w3color.js	/^function rgbToHsl(r, g, b) {$/;"	f
 rgbToHwb	w3color.js	/^function rgbToHwb(r, g, b) {$/;"	f
 roundDecimals	w3color.js	/^function roundDecimals(c) {$/;"	f
+sortHsv	css2gpl.pl	/^sub sortHsv {$/;"	s
 sortHsv	rgb2hsv.pl	/^sub sortHsv {$/;"	s
 strict	css2gpl.pl	/^use strict; $/;"	u
 strict	rgb2hsv.pl	/^use strict;$/;"	u
@@ -64,6 +66,7 @@ toNcolaString	w3color.js	/^  },$/;"	m	class:w3color
 toRgb	w3color.js	/^  },$/;"	m	class:w3color
 toRgbString	w3color.js	/^w3color.prototype = {$/;"	m	class:w3color
 toRgbaString	w3color.js	/^  },$/;"	m	class:w3color
+v5.14	rgb2hsv.pl	/^use v5.14;$/;"	u
 vars qw/ $c /	css2gpl.pl	/^use vars qw\/ $c \/;    # nombre de columns a presenter -c=6$/;"	u
 vars qw/ $i /	css2gpl.pl	/^use vars qw\/ $i \/;    # fichier entrée texte ie -s="boCss.css"$/;"	u
 vars qw/ $n /	css2gpl.pl	/^use vars qw\/ $n \/;    # nom de la palette ie: -n="namePalette"$/;"	u

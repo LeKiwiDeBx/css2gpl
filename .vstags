@@ -4,36 +4,41 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Data::Dumper qw(Dumper)	css2gpl.pl	48;"	u
 Data::Dumper qw(Dumper)	rgb2hsv.pl	11;"	u
-File::Basename	css2gpl.pl	45;"	u
+File::Basename	css2gpl.pl	47;"	u
 POSIX	rgb2hsv.pl	10;"	u
-colorName2rgb	css2gpl.pl	709;"	s
-doLineGpl	css2gpl.pl	730;"	s
-extractColorNamed	css2gpl.pl	444;"	s
-extractComment	css2gpl.pl	395;"	s
-extractHexa	css2gpl.pl	414;"	s
-extractHexaList	css2gpl.pl	426;"	s
-extractRgbHsl	css2gpl.pl	471;"	s
-hexa2rgb	css2gpl.pl	593;"	s
-hsl2Rgb	css2gpl.pl	543;"	s
-hue2Rgb	css2gpl.pl	575;"	s
-loadFileCss	css2gpl.pl	235;"	s
-readFileCss	css2gpl.pl	322;"	s
-remainder	css2gpl.pl	223;"	s
+colorName2rgb	css2gpl.pl	754;"	s
+doLineGpl	css2gpl.pl	775;"	s
+extractColorNamed	css2gpl.pl	482;"	s
+extractComment	css2gpl.pl	433;"	s
+extractHexa	css2gpl.pl	452;"	s
+extractHexaList	css2gpl.pl	464;"	s
+extractRgbHsl	css2gpl.pl	509;"	s
+hexa2rgb	css2gpl.pl	632;"	s
+hsl2Rgb	css2gpl.pl	582;"	s
+hue2Rgb	css2gpl.pl	614;"	s
+loadFileCss	css2gpl.pl	241;"	s
+readFileCss	css2gpl.pl	328;"	s
+remainder	css2gpl.pl	229;"	s
 remainder	rgb2hsv.pl	17;"	s
-rgb2hexa	css2gpl.pl	628;"	s
-rgb2hsv	css2gpl.pl	645;"	s
+rgb2hexa	css2gpl.pl	667;"	s
+rgb2hsv	css2gpl.pl	684;"	s
 rgb2hsv	rgb2hsv.pl	28;"	s
-sortHsv	css2gpl.pl	685;"	s
+sortHsv	css2gpl.pl	727;"	s
 sortHsv	rgb2hsv.pl	68;"	s
-strict	css2gpl.pl	43;"	u
+sortQuery	css2gpl.pl	389;"	s
+strict	css2gpl.pl	45;"	u
 strict	rgb2hsv.pl	8;"	u
+v5.14	css2gpl.pl	44;"	u
 v5.14	rgb2hsv.pl	7;"	u
-vars qw/ $c /	css2gpl.pl	59;"	u
-vars qw/ $i /	css2gpl.pl	56;"	u
-vars qw/ $n /	css2gpl.pl	58;"	u
-vars qw/ $o /	css2gpl.pl	57;"	u
-warnings	css2gpl.pl	44;"	u
+vars qw/ $c /	css2gpl.pl	62;"	u
+vars qw/ $i /	css2gpl.pl	59;"	u
+vars qw/ $m /	css2gpl.pl	63;"	u
+vars qw/ $n /	css2gpl.pl	61;"	u
+vars qw/ $o /	css2gpl.pl	60;"	u
+vars qw/ $s /	css2gpl.pl	66;"	u
+warnings	css2gpl.pl	46;"	u
 warnings	rgb2hsv.pl	9;"	u
-writeBodyFileGpl	css2gpl.pl	295;"	s
-writeHeaderFileGpl	css2gpl.pl	254;"	s
+writeBodyFileGpl	css2gpl.pl	301;"	s
+writeHeaderFileGpl	css2gpl.pl	260;"	s

@@ -39,13 +39,16 @@
 #  ((_/)o o(\_))
 #   `-'(. .)`-'
 #       \_/
-#                                                     GNU General Public License
-use strict; 
+#
+#                                                   GNU General Public License
+use v5.14;    # utilisation de say
+use strict;
 use warnings;
 use File::Basename;
+use Data::Dumper qw(Dumper);    ### <== #### DEBUGAGE !!!!!!!!!!!!!  ###########
 my $version = 'Beta 1.0';
-my $fCss;    # descripteur fichier CSS
-my $fGpl;    # descripteur fichier GPL
+my $fCss;                       # descripteur fichier CSS
+my $fGpl;                       # descripteur fichier GPL
 my $Header =
   "GIMP Palette\nName: %s\nColumns: %s\n#\n";    # en tête du fichier GIMP
 my $Body         = "";                           # corps du fichier GIMP
@@ -57,7 +60,10 @@ use vars qw/ $i /;    # fichier entrée texte ie -s="boCss.css"
 use vars qw/ $o /;    # fichier gpl sans extension .gpl ie -o="TheGpl"
 use vars qw/ $n /;    # nom de la palette ie: -n="namePalette"
 use vars qw/ $c /;    # nombre de columns a presenter -c=6
-
+use vars qw/ $m /;    # tri selon modele rgb ou hsv -m="rgb"|"hsv"
+use vars qw/ $k /
+  ;    # cle de tri 0|1|2 correspond [r|g|b] ou[h|s|v] -k=0 red ou hue
+use vars qw/ $s /;    # sens du tri ascendant = 0 ou descendant = 1 -s="0|1"
 my %IDlistNameColor = (
     'aliceblue'            => 'F0F8FF',
     'antiquewhite'         => 'FAEBD7',
@@ -350,40 +356,72 @@ sub readFileCss {
         }
     }
     my @sBody = split( "\n", $Body );
-    my %hashBody
-      ; # hash pour dedoublonner sur clé unique (tant pis pour les commentaires)
+    my %hashBody; # hash pour dedoublonner sur clé  (never mind about comments)
     foreach my $s (@sBody) {
+        for ($s) {
+            s/^\s+//;     # supprime les blancs au début
+            s/\s+$//;     # supprime les blancs à la fin
+            s/\s+/ /g;    # minimise les blancs internes
+        }
+
+        #print "\nligne ", $s;
         if ( $s =~ m/^(\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}\s+)(.*)$/g ) {
-            $hashBody{$1} =
-              $1 . $2;    #cle est la valeur <r g b> que l'on veut dedoublonner
+            $hashBody{$1} = $1 . $2;    #cle est la valeur <r g b>
         }
     }
-    $Body = "";           #on reconstruit le $Body
-     ##################       __zone_de_tri__       #############################
-     ################## using functions:                                        #
-     ################## sortHsv(adresse tableau, critere tri, sens tri)         #
-     ################## rgb2hsv( liste(r,g,b) )                                 #
-     ##################                                                         #
-     ############################################################################
-    # Si tri RGB
-    #       Si croissant:
-    #       tri sur R ou G ou B la cle hashBody 
-    #       Sinon 
-    #       inverse tri sur R ou G ou B la cle hashBody
-    # Sinon tri HSV
-    #       convertir rgb de la cle en hsv
-    #           Si croissant:
-    #           tri sur H ou S ou V le hsv croissant
-    #           Sinon
-    #           inverse tri sur H ou S ou V le hsv croissant    
-    #      sauvegarde dans @rray du hashBody{avec les clés tries} i.e. @final = (@data2sort  #     {@dataSorted}) ;
-    #############################################################################
-    foreach my $k ( sort keys %hashBody )    # tri croissant rgb
-    {
-        $Body .= $hashBody{$k}
-          . "\n";    # on recupere les lignes dedoublonnées triées croissant
-    }
+    $Body = "";
+    $m    = "rgb" unless defined $m;
+    $k    = "0" unless defined $k;
+    $s    = "0" unless defined $s;
+    print "\navant requete:\n";
+    say Dumper %hashBody;
+    sortQuery( \%hashBody, "hsv", $k, $s )
+      ;    ### $m,$k,$s DEBUG  DEBUG  DEBUG  DEBUG  DEBUG  DEBUG
     return $Body;
+}
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# Tri la hash table des lignes du fichier selon la requete
+# param:
+# return:
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+sub sortQuery {
+
+    # print @_;
+    my %hashLine = %{ shift() };
+    my $model    = shift @_;    # parametre modele de tri rgb ou hsv
+    my $clef     = shift @_;    # critere de tri sur r/g/b ou bien h/s/v (0,1,2)
+    my $order = shift @_;    # sens du tri 0 ou 1 soit ascendant ou descendant
+    my %sort;
+    say Dumper %hashLine;
+    say Dumper $model;
+    say Dumper $clef;
+    say Dumper $order;
+
+    if ( $model eq "hsv" ) {
+        foreach ( values %hashLine ) {
+            my ( $h, $s, $v ) = rgb2hsv( split " ", $_ );
+            $sort{ $h . " " . $s . " " . $v } = $_;
+        }
+        my @keySort       = keys %sort;
+        my @dataKeySorted = sortHsv( \@keySort, $clef, $order );
+        say Dumper @dataKeySorted;
+        exit 0;
+        return @sort{@dataKeySorted};
+    }
+    else {    # tri rgb par defaut
+        if ( $order == "1" ) {
+            foreach my $key ( reverse sort keys %hashLine ) {
+                my $Line .= $hashLine{$key} . "\n";
+            }
+        }
+        else {
+            foreach my $key ( sort keys %hashLine ) {
+                my $Line .= $hashLine{$key} . "\n";
+            }
+        }
+    }
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -474,6 +512,7 @@ sub extractRgbHsl {
       '(rgb)a?\(\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%.*\)';
     my $patternStrictHsl =
 '(?:hsl)a?\(\s*(\d*?\.?\d*)(deg|grad|rad|turn)\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%.*\)';
+
 # admet les pourcentage decimaux, sans unite d'angle (degre par defaut) et l'expression sans virgule separatrice:
 # (?:hsl)a?\(\s*(\d*?\.?\d*)(deg|grad|rad|turn|)?\s*,?\s*(\d*\.?\d*)%\s*,?\s*(\d*\.?\d*)%
 # A TESTER
@@ -643,7 +682,7 @@ sub rgb2hexa {
 # return: une liste (h,s,v)
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub rgb2hsv {    #pour le tri de palette methode GIMP
-my @rgb = @_;
+    my @rgb = @_;
     my ( $red, $green, $blue ) = @_;    #@rgb
     my @rgbs = ( sort { $a <=> $b } ( $red, $green, $blue ) );    # @rgb
     my ( $minc, $maxc ) = ( $rgbs[0], pop(@rgbs) );
@@ -670,20 +709,26 @@ my @rgb = @_;
     $s = sprintf( "%.1f", $s * 100 );
     $v = sprintf( "%.1f", $v * 100 );
     my @result = ( $h, $s, $v );
-    return ( $h, $s, $v );
+    print "\nresult : \n";
+    say Dumper @result;
+    return @result;
+
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # trie la liste @hsv sur un critere au choix H(ue) ou S(aturation) ou V(alue) en sens
-# Ascendant 0 ou descendant 1. 
-# param 1 : liste @hsv sous la forme ("h1 s1 v1", [h s v],...) 
+# Ascendant 0 ou descendant 1.
+# param 1 : liste @hsv sous la forme ("h1 s1 v1", [h s v],...)
 # param 2 : critere H | S | V sous la forme 0 | 1 | 2
 # param 3 : sens du tri ascendant | descendant sous la forme 0 | 1
 # return : list hsv forme @hsv
 # remarques: /!\ Passage param1 par reference \@TABLEAU i.e. sortHsv( \@keyData, 0, 0 ); /!\
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub sortHsv {
-    my $hsvList   = shift @_;
+    my $hsvList = shift @_;
+    say Dumper $hsvList;
+
+    # exit 0;
     my $criterion = shift @_;
     my $order     = shift @_;
     my @out       = ();
@@ -759,6 +804,7 @@ s/([[:xdigit:]]{6})\s(.*)/sprintf "%3d %3d %3d %s %-20s %-48.48s", $r, $g, $b, $
 # |___________________________________________________________________________|
 my $File    = $i;    # recupere 1er argument
 my $FileGpl = $o;    # recupere 2e argument
+
 loadFileCss($File);
 readFileCss($File);
 print "\nEcriture du fichier gpl (en tête)"

@@ -331,15 +331,7 @@ sub readFileCss {
     open( $fCss, "<", $f ) or die "Echec ouverture du fichier css : $!";
     while ( defined( $l = <$fCss> ) ) {
         chomp $l;
-
-        # if ( extractHexa($l) ne '' ) {
-        #     $Body .=
-        #       doLineGpl( hexa2rgb( extractHexa($l) ), extractComment($l) )
-        #       . "\n";
-        # }
         my @hexaList = extractHexaList($l);
-
-        # print "hexaList", @hexaList, "\n";
         if (@hexaList) {
             foreach (@hexaList) {
                 $Body .= doLineGpl( hexa2rgb($_), extractComment($l) ) . "\n";
@@ -363,8 +355,6 @@ sub readFileCss {
             s/\s+$//;     # supprime les blancs à la fin
             s/\s+/ /g;    # minimise les blancs internes
         }
-
-        #print "\nligne ", $s;
         if ( $s =~ m/^(\s*\d{1,3}\s+\d{1,3}\s+\d{1,3}\s+)(.*)$/g ) {
             $hashBody{$1} = $1 . $2;    #cle est la valeur <r g b>
         }
@@ -373,10 +363,8 @@ sub readFileCss {
     $m    = "rgb" unless defined $m;
     $k    = "0" unless defined $k;
     $s    = "0" unless defined $s;
-    print "\navant requete:\n";
-    say Dumper %hashBody;
-    sortQuery( \%hashBody, "hsv", $k, $s )
-      ;    ### $m,$k,$s DEBUG  DEBUG  DEBUG  DEBUG  DEBUG  DEBUG
+    $Body .= sprintf( "%3d %3d %3d %s\n", split( " ", $_, 4 ) )
+      foreach ( sortQuery( \%hashBody, $m, $k, $s ) );
     return $Body;
 }
 
@@ -387,14 +375,13 @@ sub readFileCss {
 # return:
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 sub sortQuery {
-
-    # print @_;
     my %hashLine = %{ shift() };
     my $model    = shift @_;    # parametre modele de tri rgb ou hsv
     my $clef     = shift @_;    # critere de tri sur r/g/b ou bien h/s/v (0,1,2)
     my $order = shift @_;    # sens du tri 0 ou 1 soit ascendant ou descendant
     my %sort;
-    say Dumper %hashLine;
+
+    # say Dumper %hashLine;
     say Dumper $model;
     say Dumper $clef;
     say Dumper $order;
@@ -407,7 +394,6 @@ sub sortQuery {
         my @keySort       = keys %sort;
         my @dataKeySorted = sortHsv( \@keySort, $clef, $order );
         say Dumper @dataKeySorted;
-        exit 0;
         return @sort{@dataKeySorted};
     }
     else {    # tri rgb par defaut
@@ -708,11 +694,7 @@ sub rgb2hsv {    #pour le tri de palette methode GIMP
     $h += 360 if $h < 0;
     $s = sprintf( "%.1f", $s * 100 );
     $v = sprintf( "%.1f", $v * 100 );
-    my @result = ( $h, $s, $v );
-    print "\nresult : \n";
-    say Dumper @result;
-    return @result;
-
+    return ( $h, $s, $v );
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

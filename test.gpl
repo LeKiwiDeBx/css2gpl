@@ -1,0 +1,27 @@
+GIMP Palette
+Name: test
+Columns: 1
+#
+# Initial file: test.css
+# Create: Sat Mar  7 18:56:36 2020
+#
+  0   0   0 000000 black test 10: ok si white 255 255 255 FFFFFF, cyan 0
+ 45  45  45 2D2D2D test 13: ok si hexa 2D2D2D background-color: rgba(45, 45, 45, 1)
+ 80  80  80 505050 test 12: ok si hexa 505050 border: 1px solid rgba(80, 80, 80, 1)
+204 204 204 CCCCCC test 11: ok si 204 204 204 color: #ccc test 11: ok si 204 204 204 color: #ccc
+238 238 238 EEEEEE test 4: ok si 238 238 238 color: #eee test 4: ok si 238 238 238 color: #eee
+255 255 255 FFFFFF white test 6: ok si hexa FFFFFF background-color: rgb
+255   0   0 FF0000 red test 10: ok si white 255 255 255 FFFFFF, cyan 0
+134 128 119 868077 test 5: ok si hexa 868077 color: rgb(134, 128, 119)
+255 165   0 FFA500 orange test 10: ok si white 255 255 255 FFFFFF, cyan 0
+255 255   0 FFFF00 yellow test 10: ok si white 255 255 255 FFFFFF, cyan 0
+ 24 204   4 18CC04 test 3: ok si 024 204 004 border-left: #18cc04 test 3: ok si 024 204 004 border-left: #18cc04
+  0 128   0 008000 green test 10: ok si white 255 255 255 FFFFFF, cyan 0
+  0 255 255 00FFFF cyan test 10: ok si white 255 255 255 FFFFFF, cyan 0
+  0 240 255 00F0FF test 2: ok si 0 240 255 background-color: #00f0fF test 2: ok si 0 240 255 background-color: #00f0fF
+ 13  18  26 0D121A test 7: ok si 13 18 26 hexa 0D121A color: rgba(5%, 7%, 10%, 0.5)
+  0   0 255 0000FF blue test 10: ok si white 255 255 255 FFFFFF, cyan 0
+ 99  17 162 6311A2 test 8: ok si 99 17 162 hexa 6311A2 color: hsl(274, 81%, 35%) test 9: ok si 99 17 162 hexa 6311A2 color: hsla(274deg, 81%, 35%, 0.85)
+ 75   0 130 4B0082 indigo test 10: ok si white 255 255 255 FFFFFF, cyan 0
+238 130 238 EE82EE violet test 10: ok si white 255 255 255 FFFFFF, cyan 0
+255   0 255 FF00FF magenta test 1: ok si 255 0 255 color: #FF00FF test 1: o

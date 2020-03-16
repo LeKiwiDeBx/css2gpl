@@ -1,9 +1,9 @@
 GIMP Palette
-Name: TEST2
+Name: TEST3
 Columns: 1
 #
 # Initial file: /home/jean/Perl/scripts/css2gpl/test2.css
-# Create: Wed May  4 18:51:51 2022
+# Create: Thu May  5 19:19:28 2022
 #
   0   0   0 000000 black
   0   0 255 0000FF blue

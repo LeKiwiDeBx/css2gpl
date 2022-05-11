@@ -866,7 +866,7 @@ s/([[:xdigit:]]{6})\s(.*)/sprintf "%3d %3d %3d %s %-20s %-48.48s", $r, $g, $b, $
   #  print __"\nWrite text to file gpl (data)"
   #    if writeBodyFileGpl( $FileGpl, $File );
   #  print "\n";
-
+();
 };
 ### <Toolbox>/Palette/Import from CSS...
 exit main;
@@ -967,7 +967,7 @@ See GIMP user manual L<https://www.gimp.org/docs/>
     [PF_SPINNER, "column", "Column number ",1,[1,10,1]],
     [PF_RADIO, "model", "Select model ",0,[Rgb=>0,Hsv=>1]],
     [PF_RADIO, "col", "Order by column ", 0,[RH=>0,GS=>1,BV=>2]],
-    [PF_BOOL,"order", "Order by ascending ", [ASC=>0,DESC=>1],"TRUE "],
+    [PF_TOGGLE,"order", "Order by ascending ", 1],
 
 =head1 AUTHOR
 
